@@ -1,0 +1,45 @@
+*** Settings ***
+Library           OperatingSystem
+
+*** Test Cases ***
+Hello Universe
+    ${name}    Set Variable    Jayson
+    ${name}    Catenate    SEPARATOR=    ${name}    a    pogi
+    Log    Hello ${name}
+
+Boolean
+    ${sample_word}    Set Variable    1234567
+    Comment    ${result}    Run Keyword And Return Status    Should Match Regexp    ${sample_word}    ^\\d{6}$
+    Comment    Log    ${result}
+    ${string_length}    Get Length    ${sample_word}
+    ${is_length_correct}    Set Variable If    ${string_length} == 7    ${True}    ${False}
+    Should Be Equal    ${is_length_correct}    True
+
+OS Variable
+    Log    ${CURDIR}
+    OperatingSystem.Create File    ${CURDIR}/Hello2.txt    Hello Universe!
+
+For Loop Range
+    @{list}    Create List    Batman    Superman    Captain Barbel
+    :FOR    ${hero}    IN    @{list}
+    \    Log    ${hero}
+    \    Exit For Loop If    "${hero}" == "Batman"
+
+Conditional
+    @{list}    Create List    Batman    Superman    Norman
+    :FOR    ${hero}    IN    @{list}
+    \    Run Keyword If    "${hero}" == "Norman"    Log    ${hero} is imba
+    \    ...    ELSE    Log    ${hero} is weak
+    \    Comment    Run Keyword Unless    "${hero}" == "Norman"    Log    ${hero} is naughty
+
+User Keyword
+    Sum Of Values    2    2    2    2    2
+    Sum Of Values    ${answer}    5    2.5
+
+*** Keywords ***
+Sum Of Values
+    [Arguments]    @{list}
+    ${answer}    Set Variable    0
+    :FOR    ${index}    IN    @{list}
+    \    ${answer}    Evaluate    ${answer} + ${index}
+    Set Test Variable    ${answer}
